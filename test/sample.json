@@ -1,14 +1,14 @@
 {
     "Tests": [
         {
-            "Convey": "This is an empty test that will break. Holochain is test driven, please see: https://github.com/metacurrency/holochain/wiki/App-Testing",
-            "Zome": "",
-            "FnName": "sampleEntryCreate",
+            "Convey": "Test test.",
+            "Zome": "pages",
+            "FnName": "createPage",
             "Input": {
-                "body": "this is the entry body",
-                "stamp": 12345
+                "title": "New wiki page",
+                "wikiName": "The Federation"
             },
-            "Output": "%h1%",
+            "Output": "123",
             "Err": "",
             "Regexp": "",
             "Time": 0,

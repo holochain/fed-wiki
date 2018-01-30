@@ -200,3 +200,7 @@ function validateModPkg (entryName) {
 function validateDelPkg (entryName) {
   return null;
 }
+
+function createPage(arg) {
+  return "123";
+}
