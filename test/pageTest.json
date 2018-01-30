@@ -51,6 +51,52 @@
             "Exposure": "public",
             "Raw": false,
             "Repeat": 0
+        },
+        {
+            "Convey": "Add Item",
+            "Zome": "pages",
+            "FnName": "addItem",
+            "Input": {
+                "pageHash": "%r1%",
+                "newItem": {
+                  "type": "paragraph",
+                  "id": "fba7f19143e8cdb3",
+                  "fields": {
+                    "text": "Hello!"
+                  }
+                }
+            },
+            "Output": "%h1%",
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
+        },
+        {
+          "Convey": "Get page as Federated Wiki JSON",
+          "Zome": "pages",
+          "FnName": "getFedWikiJSON",
+          "Input": "%h2%",
+          "Output": {
+            "title": "Newer wiki page",
+            "story": [
+              {
+                "type": "paragraph",
+                "id": "fba7f19143e8cdb3",
+                "text": "Hello!"
+              }
+            ]
+          },
+          "Err": "",
+          "Regexp": "",
+          "Time": 0,
+          "Wait": 0,
+          "Exposure": "public",
+          "Raw": false,
+          "Repeat": 0
         }
     ],
     "Identity": "",

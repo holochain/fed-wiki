@@ -64,6 +64,16 @@
                     "Name": "getPage",
                     "CallingType": "json",
                     "Exposure": "public"
+                },
+                {
+                    "Name": "addItem",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
+                {
+                  "Name": "getFedWikiJSON",
+                  "CallingType": "json",
+                  "Exposure": "public"
                 }
             ]
         }
