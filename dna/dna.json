@@ -56,7 +56,7 @@
                     "Exposure": "public"
                 },
                 {
-                    "Name": "editPage",
+                    "Name": "renamePage",
                     "CallingType": "json",
                     "Exposure": "public"
                 },
