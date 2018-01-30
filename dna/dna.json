@@ -1,0 +1,71 @@
+{
+    "Version": 1,
+    "UUID": "772dba57-0f20-4b49-a912-31b83fa16dc5",
+    "Name": "liquidwiki",
+    "Properties": {
+        "description": "Holochain variant of the Federated Wiki project",
+        "language": "en"
+    },
+    "PropertiesSchemaFile": "properties_schema.json",
+    "DHTConfig": {
+        "HashType": "sha2-256"
+    },
+    "Zomes": [
+        {
+            "Name": "pages",
+            "Description": "Define pages, contents, and behaviors",
+            "CodeFile": "pages.js",
+            "RibosomeType": "js",
+            "BridgeFuncs": null,
+            "BridgeTo": "",
+            "Entries": [
+                {
+                    "Name": "page",
+                    "DataFormat": "json",
+                    "SchemaFile": "page.json",
+                    "Sharing": "public"
+                },
+                {
+                    "Name": "pageMeta",
+                    "DataFormat": "json",
+                    "SchemaFile": "pageMeta.json",
+                    "Sharing": "public"
+                },
+                {
+                    "Name": "item",
+                    "DataFormat": "json",
+                    "SchemaFile": "item.json",
+                    "Sharing": "public"
+                },
+                {
+                    "Name": "itemSequence",
+                    "DataFormat": "json",
+                    "SchemaFile": "itemSequence.json",
+                    "Sharing": "public"
+                },
+                {
+                    "Name": "pageLinks",
+                    "DataFormat": "links",
+                    "Sharing": "public"
+                }
+            ],
+            "Functions": [
+                {
+                    "Name": "createPage",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
+                {
+                    "Name": "editPage",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
+                {
+                    "Name": "getPage",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                }
+            ]
+        }
+    ]
+}

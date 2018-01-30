@@ -1,0 +1,16 @@
+{
+  "title": "pageMeta Schema",
+  "type": "object",
+  "properties": {
+    "slug": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "slug",
+    "timestamp"
+  ]
+}

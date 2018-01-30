@@ -1,0 +1,25 @@
+{
+    "Tests": [
+        {
+            "Convey": "This is an empty test that will break. Holochain is test driven, please see: https://github.com/metacurrency/holochain/wiki/App-Testing",
+            "Zome": "",
+            "FnName": "sampleEntryCreate",
+            "Input": {
+                "body": "this is the entry body",
+                "stamp": 12345
+            },
+            "Output": "%h1%",
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
+        }
+    ],
+    "Identity": "",
+    "Fixtures": {
+        "Agents": null
+    }
+}

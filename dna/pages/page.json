@@ -1,0 +1,16 @@
+{
+  "title": "page",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "wikiName": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "wikiName"
+  ]
+}

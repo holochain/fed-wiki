@@ -1,0 +1,12 @@
+{
+  "title": "itemSequence Schema",
+  "type": "object",
+  "properties": {
+    "sequence": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "sequence"
+  ]
+}
