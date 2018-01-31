@@ -16,6 +16,7 @@ function addItem (arg) {
       {Base:pageHash, Link:itemHash, Tag:"page item"}
     ]
   });
+  // add the itemId into the itemSequence for the page
   insertItemToSequence({
     pageHash: pageHash,
     itemId: newItem.id
@@ -29,10 +30,29 @@ function updateItem (arg) {
   return hash;
 }
 
+// TODO: handle errors
 function removeItem (arg) {
-  var deletedHash = remove(arg.hashKey, arg.message);
-  // remove links for this
-  // use removeItemFromSequence({})
+  var pageHash = arg.pageHash;
+  var itemHash = arg.itemHash;
+  // remove link between page and item
+  commit("pageLinks", {
+    Links: [
+      {
+        Base: arg.pageHash,
+        Link: arg.itemHash,
+        Tag: "page item",
+        LinkAction: HC.LinkAction.Del
+      }
+    ]
+  });
+  var itemId = JSON.parse(get(itemHash)).id;
+  // remove the itemId from the itemSequence
+  removeItemFromSequence({
+    pageHash: pageHash,
+    itemId: itemId
+  });
+  // remove the entry
+  var deletedHash = remove(itemHash, arg.message);
   return deletedHash;
 }
 
@@ -126,18 +146,36 @@ function insertItemToSequence (arg) {
 // sequence length should remain the same
 // should throw error if length is different
 // or if all the IDs don't match
-function changeItemSequence (itemSequence) {
-  // DO IN VALIDATE var sequenceLink = getLinks(pageHash, "page sequence", { Load: true });
-  // save new item sequence
-  return null;
+// DO IN VALIDATE var sequenceLink = getLinks(pageHash, "page sequence", { Load: true });
+function changeItemSequence (arg) {
+  var pageHash = arg.pageHash;
+  var sequence = arg.sequence;
+  var sequenceLinks = getLinks(pageHash, "page sequence");
+  var itemSequenceHash = sequenceLinks[0].Hash;
+  var newSequenceHash = newSequence({
+    pageHash: pageHash,
+    sequenceHash: itemSequenceHash,
+    newSequence: sequence
+  });
+  return newSequenceHash;
 }
 
+// TODO: validate that itemId exists in the sequence
 function removeItemFromSequence (arg) {
+  var pageHash = arg.pageHash;
   var itemId = arg.itemId;
-  // get sequence
-  // remove item
-  // save new sequence
-  return null;
+  var sequenceLinks = getLinks(pageHash, "page sequence", { Load: true });
+  var itemSequenceHash = sequenceLinks[0].Hash;
+  var itemSequence = sequenceLinks[0].Entry.sequence;
+  var itemIdIndex = itemSequence.indexOf(itemId);
+  // remove the itemId from itemSequence
+  itemSequence.splice(itemIdIndex, 1);
+  var newSequenceHash = newSequence({
+    pageHash: pageHash,
+    sequenceHash: itemSequenceHash, // existing (for removal)
+    newSequence: itemSequence
+  });
+  return newSequenceHash;
 }
 
 // VALIDATION FUNCTIONS

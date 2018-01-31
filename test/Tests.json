@@ -107,7 +107,8 @@
             "Zome": "items",
             "FnName": "removeItem",
             "Input": {
-              "hashKey": "%h%",
+              "pageHash": {"%result%": 0},
+              "itemHash": "%h%",
               "message": "Item Deleted"
             },
             "Output": "%h%",
