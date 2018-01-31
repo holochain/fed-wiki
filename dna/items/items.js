@@ -25,6 +25,11 @@ function updateItem (arg) {
   return hash;
 }
 
+function removeItem (arg) {
+  var deletedHash = remove(arg.hashKey, arg.message);
+  return deletedHash;
+}
+
 // VALIDATION FUNCTIONS
 function validateCommit (entryName, entry, header, pkg, sources) {
   switch (entryName) {

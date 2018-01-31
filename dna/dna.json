@@ -91,6 +91,11 @@
                     "Name": "updateItem",
                     "CallingType": "json",
                     "Exposure": "public"
+                },
+                {
+                    "Name": "removeItem",
+                    "CallingType": "json",
+                    "Exposure": "public"
                 }
             ]
         }
