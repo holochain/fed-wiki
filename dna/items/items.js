@@ -6,6 +6,19 @@ var wikiName = "TheFederation"
 // https://developer.holochain.org/API_reference
 // https://developer.holochain.org/Test_driven_development_features
 
+function addItem (arg) {
+  var pageHash = arg.pageHash;
+  var newItem = arg.newItem;
+  var itemHash = commit("item", newItem);
+  // create link between pageHash and itemHash
+  var pageLinkHash = commit("pageLinks", {
+    Links: [
+      {Base:pageHash, Link:itemHash, Tag:"page item"}
+    ]
+  });
+  return itemHash;
+}
+
 function updateItem (arg) {
   var newItem = arg.newItem;
   var hash = update("item", newItem, arg.hashKey);
@@ -15,12 +28,6 @@ function updateItem (arg) {
 // VALIDATION FUNCTIONS
 function validateCommit (entryName, entry, header, pkg, sources) {
   switch (entryName) {
-    case "page":
-      // validation code here
-      return true;
-    case "pageMeta":
-      // validation code here
-      return false;
     case "item":
       // validation code here
       return true;
@@ -38,12 +45,6 @@ function validateCommit (entryName, entry, header, pkg, sources) {
 
 function validatePut (entryName, entry, header, pkg, sources) {
   switch (entryName) {
-    case "page":
-      // validation code here
-      return true;
-    case "pageMeta":
-      // validation code here
-      return false;
     case "item":
       // validation code here
       return true;
@@ -61,12 +62,6 @@ function validatePut (entryName, entry, header, pkg, sources) {
 
 function validateMod (entryName, entry, header, replaces, pkg, sources) {
   switch (entryName) {
-    case "page":
-      // validation code here
-      return true;
-    case "pageMeta":
-      // validation code here
-      return false;
     case "item":
       // validation code here
       return true;
@@ -84,12 +79,6 @@ function validateMod (entryName, entry, header, replaces, pkg, sources) {
 
 function validateDel (entryName, hash, pkg, sources) {
   switch (entryName) {
-    case "page":
-      // validation code here
-      return false;
-    case "pageMeta":
-      // validation code here
-      return false;
     case "item":
       // validation code here
       return true;

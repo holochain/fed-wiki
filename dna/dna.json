@@ -30,11 +30,6 @@
                     "DataFormat": "json",
                     "SchemaFile": "pageMeta.json",
                     "Sharing": "public"
-                },
-                {
-                    "Name": "pageLinks",
-                    "DataFormat": "links",
-                    "Sharing": "public"
                 }
             ],
             "Functions": [
@@ -50,11 +45,6 @@
                 },
                 {
                     "Name": "getPage",
-                    "CallingType": "json",
-                    "Exposure": "public"
-                },
-                {
-                    "Name": "addItem",
                     "CallingType": "json",
                     "Exposure": "public"
                 },
@@ -84,9 +74,19 @@
                     "DataFormat": "json",
                     "SchemaFile": "itemSequence.json",
                     "Sharing": "public"
+                },
+                {
+                    "Name": "pageLinks",
+                    "DataFormat": "links",
+                    "Sharing": "public"
                 }
             ],
             "Functions": [
+                {
+                    "Name": "addItem",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
                 {
                     "Name": "updateItem",
                     "CallingType": "json",

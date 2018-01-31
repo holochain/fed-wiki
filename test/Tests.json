@@ -54,7 +54,7 @@
         },
         {
             "Convey": "Add Item",
-            "Zome": "pages",
+            "Zome": "items",
             "FnName": "addItem",
             "Input": {
                 "pageHash": "%r1%",

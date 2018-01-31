@@ -24,19 +24,6 @@ function getPage (hash) {
   return JSON.parse(page);
 }
 
-function addItem (arg) {
-  var pageHash = arg.pageHash;
-  var newItem = arg.newItem;
-  var itemHash = commit("item", newItem);
-  // create link between pageHash and itemHash
-  var pageLinkHash = commit("pageLinks", {
-    Links: [
-      {Base:pageHash, Link:itemHash, Tag:"page item"}
-    ]
-  });
-  return itemHash;
-}
-
 function getFedWikiJSON (pageHash) {
   // should look like: http://connor.outlandish.academy/start-here.json
   var page = JSON.parse(get(pageHash));
