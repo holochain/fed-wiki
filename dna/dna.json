@@ -96,6 +96,31 @@
                     "Name": "removeItem",
                     "CallingType": "json",
                     "Exposure": "public"
+                },
+                {
+                    "Name": "createItemSequence",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
+                {
+                    "Name": "getItemSequence",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
+                {
+                    "Name": "insertItemToSequence",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
+                {
+                    "Name": "changeItemSequence",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
+                {
+                    "Name": "removeItemFromSequence",
+                    "CallingType": "json",
+                    "Exposure": "public"
                 }
             ]
         }

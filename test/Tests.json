@@ -7,7 +7,7 @@
             "Input": {
                 "title": "New wiki page"
             },
-            "Output": "%h%",
+            "Output": "%h2%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -20,7 +20,7 @@
             "Convey": "Get Page Test",
             "Zome": "pages",
             "FnName": "getPage",
-            "Input": "%r1%",
+            "Input": {"%result%": 0},
             "Output": {
                 "title": "New wiki page",
                 "wikiName": "TheFederation"
@@ -34,30 +34,11 @@
             "Repeat": 0
         },
         {
-            "Convey": "Rename Page Test",
-            "Zome": "pages",
-            "FnName": "renamePage",
-            "Input": {
-                "hashKey": "%r2%",
-                "newEntry": {
-                    "title": "Newer wiki page"
-                }
-            },
-            "Output": "%h%",
-            "Err": "",
-            "Regexp": "",
-            "Time": 0,
-            "Wait": 0,
-            "Exposure": "public",
-            "Raw": false,
-            "Repeat": 0
-        },
-        {
             "Convey": "Add Item",
             "Zome": "items",
             "FnName": "addItem",
             "Input": {
-                "pageHash": "%r1%",
+                "pageHash": {"%result%": 0},
                 "newItem": {
                   "type": "paragraph",
                   "id": "fba7f19143e8cdb3",
@@ -66,7 +47,7 @@
                   }
                 }
             },
-            "Output": "%h1%",
+            "Output": "%h4%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -79,9 +60,9 @@
           "Convey": "Get page as Federated Wiki JSON",
           "Zome": "pages",
           "FnName": "getFedWikiJSON",
-          "Input": "%h2%",
+          "Input": {"%result%": 0},
           "Output": {
-            "title": "Newer wiki page",
+            "title": "New wiki page",
             "story": [
               {
                 "type": "paragraph",
@@ -103,7 +84,7 @@
             "Zome": "items",
             "FnName": "updateItem",
             "Input": {
-              "hashKey": "%h1%",
+              "hashKey": "%h4%",
               "newItem": {
                 "type":"paragraph",
                 "id": "fba7f19143e8cdb3",
@@ -128,6 +109,25 @@
             "Input": {
               "hashKey": "%h%",
               "message": "Item Deleted"
+            },
+            "Output": "%h%",
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
+        },
+        {
+            "Convey": "Rename Page Test",
+            "Zome": "pages",
+            "FnName": "renamePage",
+            "Input": {
+                "pageHash": {"%result%": 0},
+                "newEntry": {
+                    "title": "Newer wiki page"
+                }
             },
             "Output": "%h%",
             "Err": "",

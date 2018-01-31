@@ -1,7 +1,7 @@
 'use strict';
 
 var wikiName = "TheFederation"
-// how should this get set
+// TODO: how should this get set
 
 // https://developer.holochain.org/API_reference
 // https://developer.holochain.org/Test_driven_development_features
@@ -9,13 +9,21 @@ var wikiName = "TheFederation"
 function createPage (arg) {
   var pageObject = arg;
   pageObject["wikiName"] = wikiName;
-  var hash = commit("page", pageObject);
-  return hash;
+  var pageHash = commit("page", pageObject);
+  // instantiate an itemSequence for the page
+  call("items", "createItemSequence", {
+    pageHash: pageHash,
+    // instantiate it with an empty sequence
+    itemSequence: {sequence: []}
+  });
+  return pageHash;
 }
 
 function renamePage (arg) {
   var newPage = {title: arg.newEntry.title, wikiName: wikiName};
-  var hash = update("page", newPage, arg.hashKey);
+  var hash = update("page", newPage, arg.pageHash);
+  // TODO: this breaks the LINKING for the hash of the previous page
+  // This is why the rename test is the very last
   return hash;
 }
 
@@ -28,6 +36,8 @@ function getFedWikiJSON (pageHash) {
   // should look like: http://connor.outlandish.academy/start-here.json
   var page = JSON.parse(get(pageHash));
   var pageLinks = getLinks(pageHash, "page item", { Load: true });
+
+  // TODO: get itemSequence, and use that to order the items
 
   // define a top level object for our response
   var response = {
@@ -67,15 +77,6 @@ function validateCommit (entryName, entry, header, pkg, sources) {
     case "pageMeta":
       // validation code here
       return false;
-    case "item":
-      // validation code here
-      return true;
-    case "itemSequence":
-      // validation code here
-      return false;
-    case "pageLinks":
-      // validation code here
-      return true;
     default:
       // invalid entry name!!
       return false;
@@ -90,15 +91,6 @@ function validatePut (entryName, entry, header, pkg, sources) {
     case "pageMeta":
       // validation code here
       return false;
-    case "item":
-      // validation code here
-      return true;
-    case "itemSequence":
-      // validation code here
-      return false;
-    case "pageLinks":
-      // validation code here
-      return true;
     default:
       // invalid entry name!!
       return false;
@@ -113,15 +105,6 @@ function validateMod (entryName, entry, header, replaces, pkg, sources) {
     case "pageMeta":
       // validation code here
       return false;
-    case "item":
-      // validation code here
-      return true;
-    case "itemSequence":
-      // validation code here
-      return false;
-    case "pageLinks":
-      // validation code here
-      return true;
     default:
       // invalid entry name
       return false;
@@ -136,15 +119,6 @@ function validateDel (entryName, hash, pkg, sources) {
     case "pageMeta":
       // validation code here
       return false;
-    case "item":
-      // validation code here
-      return true;
-    case "itemSequence":
-      // validation code here
-      return false;
-    case "pageLinks":
-      // validation code here
-      return true;
     default:
       // invalid entry name!!
       return false;
@@ -153,9 +127,6 @@ function validateDel (entryName, hash, pkg, sources) {
 
 function validateLink (entryName, baseHash, links, pkg, sources) {
   switch (entryName) {
-    case "pageLinks":
-      // validation code here
-      return true;
     default:
       // invalid entry name
       return false;
