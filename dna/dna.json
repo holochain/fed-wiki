@@ -32,18 +32,6 @@
                     "Sharing": "public"
                 },
                 {
-                    "Name": "item",
-                    "DataFormat": "json",
-                    "SchemaFile": "item.json",
-                    "Sharing": "public"
-                },
-                {
-                    "Name": "itemSequence",
-                    "DataFormat": "json",
-                    "SchemaFile": "itemSequence.json",
-                    "Sharing": "public"
-                },
-                {
                     "Name": "pageLinks",
                     "DataFormat": "links",
                     "Sharing": "public"
@@ -74,6 +62,35 @@
                   "Name": "getFedWikiJSON",
                   "CallingType": "json",
                   "Exposure": "public"
+                }
+            ]
+        },
+        {
+            "Name": "items",
+            "Description": "Define items, contents, and behaviors",
+            "CodeFile": "items.js",
+            "RibosomeType": "js",
+            "BridgeFuncs": null,
+            "BridgeTo": "",
+            "Entries": [
+                {
+                    "Name": "item",
+                    "DataFormat": "json",
+                    "SchemaFile": "item.json",
+                    "Sharing": "public"
+                },
+                {
+                    "Name": "itemSequence",
+                    "DataFormat": "json",
+                    "SchemaFile": "itemSequence.json",
+                    "Sharing": "public"
+                }
+            ],
+            "Functions": [
+                {
+                    "Name": "updateItem",
+                    "CallingType": "json",
+                    "Exposure": "public"
                 }
             ]
         }
