@@ -136,7 +136,7 @@ var wiki = {
             // create the item
             var newItem = {
               type: "paragraph",
-              id: Math.random(),
+              id: Math.random().toString(),
               text: event.target.value
             }
             wiki.addItem(wiki.activePageHash, newItem, function() {})
