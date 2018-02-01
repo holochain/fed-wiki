@@ -210,6 +210,53 @@
             "Exposure": "public",
             "Raw": false,
             "Repeat": 0
+        },
+        {
+            "Convey": "Update Item Test",
+            "Zome": "items",
+            "FnName": "updateItem",
+            "Input": {
+              "pageHash": {"%result%": 0},
+              "itemHash": {"%result%": 1},
+              "newItem": {
+                "type":"paragraph",
+                "id": "fba7f19143e8cdb3",
+                "fields": {
+                  "text": "Updated Hello is now HI!"
+                }
+              }
+            },
+            "Output": "%h1%",
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
+        },
+        {
+          "Convey": "When getting page, item should be updated",
+          "Zome": "pages",
+          "FnName": "getFedWikiJSON",
+          "Input": {"%result%": 0},
+          "Output": {
+            "title": "New wiki page",
+            "story": [
+              {
+                "type": "paragraph",
+                "id": "fba7f19143e8cdb3",
+                "text": "Updated Hello is now HI!"
+              }
+            ]
+          },
+          "Err": "",
+          "Regexp": "",
+          "Time": 0,
+          "Wait": 0,
+          "Exposure": "public",
+          "Raw": false,
+          "Repeat": 0
         }
     ],
     "Identity": "",

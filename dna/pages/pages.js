@@ -22,8 +22,36 @@ function createPage (arg) {
 function renamePage (arg) {
   var newPage = {title: arg.newEntry.title, wikiName: wikiName};
   var hash = update("page", newPage, arg.pageHash);
-  // TODO: this breaks the LINKING for the hash of the previous page
-  // This is why the rename test is the very last
+
+  // get existing links to items
+  var itemLinks = getLinks(arg.pageHash, "page item");
+  // point from this new base, to the old ones
+  for (var i = 0; i < itemLinks.length; i++) {
+    // todo: assign result to var and error check
+    commit("pageLinks", {
+      Links: [
+        {
+          Base: hash,
+          Link: itemLinks[0].Hash,
+          Tag: "page item"
+        }
+      ]
+    });
+  }
+
+  // get existing links to itemSequence
+  var sequenceLinks = getLinks(arg.pageHash, "page sequence");
+  // point from this new base, to that old
+  commit("pageLinks", {
+    Links: [
+      {
+        Base: hash,
+        Link: sequenceLinks[0].Hash,
+        Tag: "page sequence"
+      }
+    ]
+  });
+
   return hash;
 }
 

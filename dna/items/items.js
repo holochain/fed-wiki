@@ -25,8 +25,13 @@ function addItem (arg) {
 }
 
 function updateItem (arg) {
-  var newItem = arg.newItem;
-  var hash = update("item", newItem, arg.hashKey);
+  var hash = updateLinkedThing({
+    thingType: "item",
+    linkTag: "page item",
+    pageHash: arg.pageHash,
+    thingHash: arg.itemHash,
+    newThing: arg.newItem
+  });
   return hash;
 }
 
@@ -78,42 +83,6 @@ function getItemSequence (arg) {
   }
 }
 
-// private
-function newSequence (arg) {
-  // TODO: handle errors
-  var pageHash = arg.pageHash;
-  var sequenceHash = arg.sequenceHash;
-  var newSequence = arg.newSequence;
-  // if exists, orphan existing hash by deleting link to it
-  if (sequenceHash) {
-    commit("pageLinks", {
-      Links: [
-        {
-          Base: pageHash,
-          Link: sequenceHash,
-          Tag: "page sequence",
-          LinkAction: HC.LinkAction.Del
-        }
-      ]
-    });
-  }
-  // create the new sequence
-  var newSequenceHash =  commit("itemSequence", {
-    sequence: newSequence
-  });
-  // link from the page to the new sequence
-  var pageLinkHash = commit("pageLinks", {
-    Links: [
-      {
-        Base: pageHash,
-        Link: newSequenceHash,
-        Tag: "page sequence"
-      }
-    ]
-  });
-  return newSequenceHash;
-}
-
 // new itemId will be added to sequence
 function insertItemToSequence (arg) {
   var itemId = arg.itemId;
@@ -131,7 +100,7 @@ function insertItemToSequence (arg) {
     itemSequence = sequenceLinks[0].Entry.sequence
     // add new item
     itemSequence.push(itemId)
-    var newSequenceHash = newSequence({
+    var newSequenceHash = updateSequence({
       pageHash: pageHash,
       sequenceHash: itemSequenceHash,
       newSequence: itemSequence
@@ -152,7 +121,7 @@ function changeItemSequence (arg) {
   var sequence = arg.sequence;
   var sequenceLinks = getLinks(pageHash, "page sequence");
   var itemSequenceHash = sequenceLinks[0].Hash;
-  var newSequenceHash = newSequence({
+  var newSequenceHash = updateSequence({
     pageHash: pageHash,
     sequenceHash: itemSequenceHash,
     newSequence: sequence
@@ -170,7 +139,7 @@ function removeItemFromSequence (arg) {
   var itemIdIndex = itemSequence.indexOf(itemId);
   // remove the itemId from itemSequence
   itemSequence.splice(itemIdIndex, 1);
-  var newSequenceHash = newSequence({
+  var newSequenceHash = updateSequence({
     pageHash: pageHash,
     sequenceHash: itemSequenceHash, // existing (for removal)
     newSequence: itemSequence
@@ -278,3 +247,47 @@ function genesis () {
   // any genesis code here
   return true;
 }
+
+/*
+ * PRIVATE
+ */
+
+ function updateLinkedThing (arg) {
+   // TODO: handle errors
+   // if exists, orphan existing hash by deleting link to it
+   commit("pageLinks", {
+     Links: [
+       {
+         Base: arg.pageHash,
+         Link: arg.thingHash,
+         Tag: arg.linkTag,
+         LinkAction: HC.LinkAction.Del
+       }
+     ]
+   });
+   // create the new sequence
+   var newThingHash =  commit(arg.thingType, arg.newThing);
+   // link from the page to the new sequence
+   commit("pageLinks", {
+     Links: [
+       {
+         Base: arg.pageHash,
+         Link: newThingHash,
+         Tag: arg.linkTag
+       }
+     ]
+   });
+   return newThingHash;
+ }
+
+ function updateSequence (arg) {
+   return updateLinkedThing({
+     thingType: "itemSequence",
+     linkTag: "page sequence",
+     pageHash: arg.pageHash,
+     thingHash: arg.sequenceHash,
+     newThing: {
+       sequence: arg.newSequence
+     }
+   });
+ }
