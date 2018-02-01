@@ -62,7 +62,17 @@ function getFedWikiJSON (pageHash) {
     }
     // add the properly item structured into the story array
     story.push(newItem);
-  }
+  };
+
+  var itemSequence = call("items", "getItemSequence", {
+    pageHash: pageHash
+  });
+  
+  // sort story array by itemSequence
+  story = story.map(function(e,i){return i;})
+               .sort(function(a,b){return itemSequence[a] - itemSequence[b];})
+               .map(function(e){return story[e];});
+
   // set the story array as a property on the response
   response.story = story;
   return response;

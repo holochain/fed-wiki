@@ -57,6 +57,29 @@
             "Repeat": 0
         },
         {
+            "Convey": "Add Second Item To Enable Testing Sort",
+            "Zome": "items",
+            "FnName": "addItem",
+            "Input": {
+                "pageHash": {"%result%": 0},
+                "newItem": {
+                  "type": "paragraph",
+                  "id": "testSortedItem",
+                  "fields": {
+                    "text": "Sup?"
+                  }
+                }
+            },
+            "Output": "%h4%",
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
+        },
+        {
           "Convey": "Get page as Federated Wiki JSON",
           "Zome": "pages",
           "FnName": "getFedWikiJSON",
@@ -68,6 +91,11 @@
                 "type": "paragraph",
                 "id": "fba7f19143e8cdb3",
                 "text": "Hello!"
+              },
+              {
+                "type": "paragraph",
+                "id": "testSortedItem",
+                "text": "Sup?"
               }
             ]
           },
@@ -89,7 +117,7 @@
                 "type":"paragraph",
                 "id": "fba7f19143e8cdb3",
                 "fields": {
-                  "text": "Updated Hello is now HI!"
+                  "text": "Updated Hello"
                 }
               }
             },
