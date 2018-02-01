@@ -5,12 +5,12 @@
     "title": {
       "type": "string"
     },
-    "wikiName": {
+    "wikiId": {
       "type": "string"
     }
   },
   "required": [
     "title",
-    "wikiName"
+    "wikiId"
   ]
 }

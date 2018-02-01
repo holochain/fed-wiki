@@ -23,7 +23,7 @@
             "Input": {"%result%": 0},
             "Output": {
                 "title": "New wiki page",
-                "wikiName": "TheFederation"
+                "wikiId": "%agent%"
             },
             "Err": "",
             "Regexp": "",

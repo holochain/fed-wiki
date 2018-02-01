@@ -30,6 +30,11 @@
                     "DataFormat": "json",
                     "SchemaFile": "pageMeta.json",
                     "Sharing": "public"
+                },
+                {
+                    "Name": "wikiPageLinks",
+                    "DataFormat": "json",
+                    "Sharing": "public"
                 }
             ],
             "Functions": [

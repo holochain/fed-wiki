@@ -8,7 +8,9 @@ var wikiName = "TheFederation"
 
 function createPage (arg) {
   var pageObject = arg;
-  pageObject["wikiName"] = wikiName;
+  //Todo: name wiki
+  //pageObject["wikiName"] = wikiName;
+  pageObject["wikiId"] = App.Agent.Hash;
   var pageHash = commit("page", pageObject);
   // instantiate an itemSequence for the page
   call("items", "createItemSequence", {
@@ -16,11 +18,20 @@ function createPage (arg) {
     // instantiate it with an empty sequence
     itemSequence: {sequence: []}
   });
+  commit("wikiPageLinks", {
+    Links: [
+      {
+        Base: App.Agent.Hash,
+        Link: pageHash,
+        Tag: "wiki page"
+      }
+    ]
+  })
   return pageHash;
 }
 
 function renamePage (arg) {
-  var newPage = {title: arg.newEntry.title, wikiName: wikiName};
+  var newPage = {title: arg.newEntry.title, wikiId: App.Agent.Hash};
   var hash = update("page", newPage, arg.pageHash);
 
   // get existing links to items
@@ -95,7 +106,7 @@ function getFedWikiJSON (pageHash) {
   var itemSequence = call("items", "getItemSequence", {
     pageHash: pageHash
   });
-  
+
   // sort story array by itemSequence
   story = story.map(function(e,i){return i;})
                .sort(function(a,b){return itemSequence[a] - itemSequence[b];})
