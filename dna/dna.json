@@ -54,6 +54,11 @@
                     "Exposure": "public"
                 },
                 {
+                    "Name": "getPageByTitle",
+                    "CallingType": "json",
+                    "Exposure": "public"
+                },
+                {
                   "Name": "getFedWikiJSON",
                   "CallingType": "json",
                   "Exposure": "public"
