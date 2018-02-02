@@ -1,0 +1,30 @@
+{
+  "name": "liquid-wiki",
+  "version": "1.0.0",
+  "description": "Federated Wiki on Holochain: social/personal hypertext writing.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node scripts/start.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Holochain/fed-wiki.git"
+  },
+  "keywords": [
+    "federation"
+  ],
+  "author": "todo",
+  "license": "SEE LICENSE IN README.md",
+  "bugs": {
+    "url": "https://github.com/Holochain/fed-wiki/issues"
+  },
+  "homepage": "https://github.com/Holochain/fed-wiki#readme",
+  "devDependencies": {
+    "browser-sync": "^2.23.6"
+  },
+  "dependencies": {}
+}
