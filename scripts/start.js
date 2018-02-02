@@ -12,10 +12,6 @@ function consoleOut (error, stdout, stderr) {
   }
 }
 
-function startHoloApp () {
-  return 
-}
-
 exec("hcdev --no-nat-upnp web " + port, consoleOut);
 
 setTimeout(function () {
