@@ -71,6 +71,14 @@ function getPage (hash) {
   return JSON.parse(page);
 }
 
+function getPageByTitle (params) {
+  var pageHash = makeHash("page", {
+    title: params.pageTitle,
+    wikiId: App.Agent.Hash
+  });
+  return getFedWikiJSON(pageHash);
+}
+
 function getFedWikiJSON (pageHash) {
   // should look like: http://connor.outlandish.academy/start-here.json
   var page = JSON.parse(get(pageHash));
