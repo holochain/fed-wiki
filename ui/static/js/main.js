@@ -90,14 +90,39 @@ var wiki = {
     document.querySelector('textarea').focus();
   },
 
+  moveItem: function moveItem (from, to) {
+    // TODO: fix ordering
+    var movedItem = wiki.storyDisplay[from];
+    var destinationIndex = (from > to) ? to - 1 : to;
+    wiki.storyDisplay.splice(from, 1);
+    wiki.storyDisplay.splice(destinationIndex, 0, movedItem);
+    wiki.refreshStory();
+  },
+
+  drag: function drag (event) {
+    event.dataTransfer.setData("text", event.target.id);
+  },
+
+  allowDrop: function allowDrop (event) {
+    event.preventDefault();
+  },
+
+  drop: function drop (event) {
+    event.preventDefault();
+    var data = event.dataTransfer.getData("text");
+    console.log(data)
+  },
+
   renderStoryItem: function renderStoryItem (item, index) {
-    var markup = "";
+    var markup = "<div ondrop='wiki.drop(event)' ondragover='wiki.allowDrop(event)'>";
     var text = item.text || "";
     if (item.type === "edit-paragraph") {
-      return "<div class='edit-paragraph'><textarea data-nif-id='" + index + "'>" + text + "</textarea></div>";
+      markup += "<div class='edit-paragraph'><textarea class='w-100' data-nif-id='" + index + "'>" + text + "</textarea></div>";
     } else if (item.type === "paragraph") {
-      return "<p id='" + item.id +"' class='paragraph-item'>" + text + "</p>";
+      markup += "<p draggable='true' ondragstart='wiki.drag(event)' id='" + item.id +"' class='paragraph-item'>" + text + "</p>";
     }
+
+    markup += "</div>";
 
     return markup;
   },
@@ -145,7 +170,7 @@ var wiki = {
 
   init: function () {
     wiki.createPage({
-        "title": "Welcome Developers"
+        "title": "Welcome Developers!"
     }, function (hash) {
       wiki.getPage(hash, function (page) {
         wiki.activePageHash = hash;
