@@ -77,7 +77,7 @@ function getItemSequence (arg) {
   var pageHash = arg.pageHash;
   var pageLinks = getLinks(pageHash, "page sequence", { Load: true });
   if (pageLinks.length > 0) {
-    return pageLinks[0].Entry.sequence
+    return pageLinks[0].Entry.sequence;
   } else {
     return "Error there should be a sequence for a page!";
   }

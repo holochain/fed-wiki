@@ -7,7 +7,7 @@
             "Input": {
                 "title": "New wiki page"
             },
-            "Output": "%h2%",
+            "Output": "%h3%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -22,8 +22,7 @@
             "FnName": "getPage",
             "Input": {"%result%": 0},
             "Output": {
-                "title": "New wiki page",
-                "wikiId": "%agent%"
+                "title": "New wiki page"
             },
             "Err": "",
             "Regexp": "",
@@ -108,16 +107,11 @@
           "Repeat": 0
         },
         {
-            "Convey": "Rename Page Test",
+            "Convey": "Get Pages Test",
             "Zome": "pages",
-            "FnName": "renamePage",
-            "Input": {
-                "pageHash": {"%result%": 0},
-                "newEntry": {
-                    "title": "Newer wiki page"
-                }
-            },
-            "Output": "%h3%",
+            "FnName": "getPages",
+            "Input": {},
+            "Output": ["New wiki page"],
             "Err": "",
             "Regexp": "",
             "Time": 0,

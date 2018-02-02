@@ -4,13 +4,9 @@
   "properties": {
     "title": {
       "type": "string"
-    },
-    "wikiId": {
-      "type": "string"
     }
   },
   "required": [
-    "title",
-    "wikiId"
+    "title"
   ]
 }

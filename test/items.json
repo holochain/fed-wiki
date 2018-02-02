@@ -7,7 +7,7 @@
             "Input": {
                 "title": "New wiki page"
             },
-            "Output": "%h2%",
+            "Output": "%h3%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
