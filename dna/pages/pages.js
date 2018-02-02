@@ -42,7 +42,7 @@ function createPage (arg) {
     Links: [
       {
         Base: App.DNA.Hash,
-        Link: pageHash,
+        Link: metaHash,
         Tag: "wiki page"
       }
     ]
@@ -54,8 +54,9 @@ function getPages () {
   var pages = getLinks(App.DNA.Hash, "wiki page", { Load: true });
   var result = [];
   for (var i = 0; i < pages.length; i++) {
-    result.push(pages[i].Entry.title);
+    result.push(pages[i].Entry.slug);
   }
+  // a list of slugs
   return result;
 }
 
@@ -70,22 +71,28 @@ function isErr(result) {
     return ((typeof result === 'object') && result.name == "HolochainError");
 }
 
-function getPageBySlug (params) {
+function getPageBySlug (slug) {
   var metaHash = makeHash("pageMeta", {
-    slug: params.slug
+    slug: slug
   });
-  var linksToPage = getLinks(metaHash, "page for slug");
+  var linksToPage = getLinks(metaHash, "page for slug", { Load: true });
   if (isErr(linksToPage)) {
     return null;
   }
-  var pageHash = linksToPage[0].Hash;
-  return getFedWikiJSON(pageHash);
+  return {
+    hash: linksToPage[0].Hash,
+    title: linksToPage[0].Entry.title
+  };
 }
 
-function getFedWikiJSON (pageHash) {
-  // should look like: http://connor.outlandish.academy/start-here.json
-  var page = JSON.parse(get(pageHash));
-  var pageLinks = getLinks(pageHash, "page item", { Load: true });
+function getFedWikiJSON (params) {
+  var page = getPageBySlug(params.slug);
+
+  if (!page) {
+    return null;
+  }
+
+  var pageLinks = getLinks(page.hash, "page item", { Load: true });
 
   // define a top level object for our response
   var response = {
@@ -113,7 +120,7 @@ function getFedWikiJSON (pageHash) {
   };
 
   var itemSequence = call("items", "getItemSequence", {
-    pageHash: pageHash
+    pageHash: page.hash
   });
 
   // sort story array by itemSequence
@@ -124,6 +131,32 @@ function getFedWikiJSON (pageHash) {
   // set the story array as a property on the response
   response.story = story;
   return response;
+}
+
+function getSitemapEntry (slug) {
+  // get page by slug
+  var page = getPageBySlug(slug);
+  if (!page) {
+    return null;
+  }
+
+  // get items, get sequence, retrieve first item, and use text as synopsis
+  // TODO: how to do date?
+  return {
+    slug: slug,
+    title: page.title,
+    date: 1512129313492, // TODO: unhardcode!
+    synopsis: "Hello!" // TODO: unhardcode!
+  };
+}
+
+function getSitemap () {
+  var slugs = getPages();
+  var result = [];
+  for (var i = 0; i < slugs.length; i++) {
+    result.push(getSitemapEntry(slugs[i]));
+  }
+  return result;
 }
 
 // VALIDATION FUNCTIONS

@@ -79,10 +79,12 @@
             "Repeat": 0
         },
         {
-          "Convey": "Get page as Federated Wiki JSON",
+          "Convey": "Get page by slug as Federated Wiki JSON",
           "Zome": "pages",
           "FnName": "getFedWikiJSON",
-          "Input": {"%result%": 0},
+          "Input": {
+              "slug": "new-wiki-page"
+          },
           "Output": {
             "title": "New wiki page",
             "story": [
@@ -107,26 +109,29 @@
           "Repeat": 0
         },
         {
-            "Convey": "Get Page By Slug (also returns FedWikiJSON)",
+            "Convey": "getFedWiki returns null if not found",
             "Zome": "pages",
             "FnName": "getPageBySlug",
             "Input": {
-              "slug": "new-wiki-page"
+                "slug": "new-page"
             },
+            "Output": null,
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
+        },
+        {
+            "Convey": "Get Page By Slug returns hash and title",
+            "Zome": "pages",
+            "FnName": "getPageBySlug",
+            "Input": "new-wiki-page",
             "Output": {
-              "title": "New wiki page",
-              "story": [
-                {
-                  "type": "paragraph",
-                  "id": "fba7f19143e8cdb3",
-                  "text": "Hello!"
-                },
-                {
-                  "type": "paragraph",
-                  "id": "testSortedItem",
-                  "text": "Sup?"
-                }
-              ]
+              "hash": {"%result%": 0},
+              "title": "New wiki page"
             },
             "Err": "",
             "Regexp": "",
@@ -140,9 +145,7 @@
             "Convey": "Get Page By Slug returns null if not found",
             "Zome": "pages",
             "FnName": "getPageBySlug",
-            "Input": {
-              "slug": "new-page"
-            },
+            "Input": "new-page",
             "Output": null,
             "Err": "",
             "Regexp": "",
@@ -157,7 +160,47 @@
             "Zome": "pages",
             "FnName": "getPages",
             "Input": {},
-            "Output": ["New wiki page"],
+            "Output": ["new-wiki-page"],
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
+        },
+        {
+            "Convey": "Get Sitemap Entry",
+            "Zome": "pages",
+            "FnName": "getSitemapEntry",
+            "Input": "new-wiki-page",
+            "Output": {
+                "slug": "new-wiki-page",
+                "title": "New wiki page",
+                "date": 1512129313492,
+                "synopsis": "Hello!"
+            },
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "",
+            "Raw": false,
+            "Repeat": 0
+        },
+        {
+            "Convey": "Get Sitemap",
+            "Zome": "pages",
+            "FnName": "getSitemap",
+            "Input": {},
+            "Output": [
+              {
+                "slug": "new-wiki-page",
+                "title": "New wiki page",
+                "date": 1512129313492,
+                "synopsis": "Hello!"
+              }
+            ],
             "Err": "",
             "Regexp": "",
             "Time": 0,

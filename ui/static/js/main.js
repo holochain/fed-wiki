@@ -17,6 +17,9 @@ var holo = {
   }
 };
 
+var testPageName = "Welcome Developers";
+var testPageSlug = "welcome-developers";
+
 var wiki = {
   activePageHash: null,
   visiblePages: [],
@@ -31,9 +34,11 @@ var wiki = {
     wiki.refreshStory();
   },
 
-  getPage: function getPage (hash, callback) {
+  getPage: function getPage (slug, callback) {
     // IF (page not in client cache)
-    holo.send('pages', 'getFedWikiJSON', hash, callback);
+    holo.send('pages', 'getFedWikiJSON', {
+      slug: slug
+    }, callback);
     // OR
     // retrieve from client cache.
   },
@@ -170,9 +175,9 @@ var wiki = {
 
   init: function () {
     wiki.createPage({
-        "title": "Welcome Developers!"
+        "title": testPageName
     }, function (hash) {
-      wiki.getPage(hash, function (page) {
+      wiki.getPage(testPageSlug, function (page) {
         wiki.activePageHash = hash;
         wiki.displayPage(page);
       })

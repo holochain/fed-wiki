@@ -65,6 +65,15 @@
                   "Name": "getFedWikiJSON",
                   "CallingType": "json",
                   "Exposure": "public"
+                },
+                {
+                  "Name": "getSitemap",
+                  "CallingType": "json",
+                  "Exposure": "public"
+                },
+                {
+                  "Name": "getSitemapEntry",
+                  "CallingType": "json"
                 }
             ]
         },
