@@ -87,7 +87,7 @@ var wiki = {
       type: "new-paragraph"
     });
     wiki.refreshStory();
-
+    document.querySelector('textarea').focus();
   },
 
   renderStoryItem: function renderStoryItem (item, index) {
@@ -109,11 +109,28 @@ var wiki = {
     document.getElementById("wiki-page-story").innerHTML = storyMarkup;
   },
 
+  quickNewParagraph: function quickNewParagraph(previousId, newText) {
+    var newItem = {
+      id: Math.random().toString(),
+      type: "paragraph",
+      text: newText,
+    }
+    wiki.storyDisplay[previousId] = newItem;
+    wiki.storyDisplay.splice(previousId + 1, 0, {
+      type: "new-paragraph"
+    });
+    wiki.addItem(wiki.activePageHash, newItem, function() {})
+    wiki.refreshStory();
+    // Focus in new paragraph textarea
+    var fields = document.querySelectorAll('#wiki-page-story textarea');
+    fields[0].focus();
+  },
+
   init: function () {
     console.log('GO');
 
     wiki.createPage({
-        "title": "Welcome Visitors"
+        "title": "Welcome Developers"
     }, function (hash) {
       wiki.getPage(hash, function (page) {
         wiki.activePageHash = hash;
@@ -147,6 +164,17 @@ var wiki = {
           wiki.refreshStory();
         }
       });
+
+      document.getElementById("wiki-page").
+        addEventListener("keydown", function (event) {
+          if (event.target.tagName === "TEXTAREA") {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              var id = event.target.getAttribute('data-nif-id');
+              wiki.quickNewParagraph(id, event.target.value);
+            }
+          }
+        });
   }
 
 };
