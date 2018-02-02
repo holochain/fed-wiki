@@ -3,6 +3,14 @@
 // https://developer.holochain.org/API_reference
 // https://developer.holochain.org/Test_driven_development_features
 
+function slugForTitle (title) {
+  return title.toString().toLowerCase().trim()
+    .replace(/\s+/g, '-')           // Replace spaces with -
+    .replace(/&/g, '-and-')         // Replace & with 'and'
+    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+    .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+}
+
 function createPage (arg) {
   var pageObject = arg;
   var pageHash = commit("page", pageObject);
@@ -13,7 +21,21 @@ function createPage (arg) {
     itemSequence: {sequence: []}
   });
 
-  // TODO: instantiate a pageMeta entry with the slug
+  // create a slug for the page, based on the title
+  var slug = slugForTitle(arg.title);
+  var metaHash = commit("pageMeta", {
+    slug: slug
+  });
+  // hang the page entry off the slug, so it's findable by slug
+  commit("slugLinks", {
+    Links: [
+      {
+        Base: metaHash,
+        Link: pageHash,
+        Tag: "page for slug"
+      }
+    ]
+  });
 
   // link all pages to the DNA hash so they can be retrieved all at once
   commit("wikiPageLinks", {
@@ -42,10 +64,21 @@ function getPage (hash) {
   return JSON.parse(page);
 }
 
-function getPageByTitle (params) {
-  var pageHash = makeHash("page", {
-    title: params.pageTitle
+// Util function isErr
+// helper function to determine if value returned from holochain function is an error
+function isErr(result) {
+    return ((typeof result === 'object') && result.name == "HolochainError");
+}
+
+function getPageBySlug (params) {
+  var metaHash = makeHash("pageMeta", {
+    slug: params.slug
   });
+  var linksToPage = getLinks(metaHash, "page for slug");
+  if (isErr(linksToPage)) {
+    return null;
+  }
+  var pageHash = linksToPage[0].Hash;
   return getFedWikiJSON(pageHash);
 }
 
@@ -101,8 +134,11 @@ function validateCommit (entryName, entry, header, pkg, sources) {
       return true;
     case "pageMeta":
       // validation code here
-      return false;
+      return true;
     case "wikiPageLinks":
+      // validation code here
+      return true;
+    case "slugLinks":
       // validation code here
       return true;
     default:
@@ -118,8 +154,11 @@ function validatePut (entryName, entry, header, pkg, sources) {
       return true;
     case "pageMeta":
       // validation code here
-      return false;
+      return true;
     case "wikiPageLinks":
+      // validation code here
+      return true;
+    case "slugLinks":
       // validation code here
       return true;
     default:
@@ -135,8 +174,11 @@ function validateMod (entryName, entry, header, replaces, pkg, sources) {
       return true;
     case "pageMeta":
       // validation code here
-      return false;
+      return true;
     case "wikiPageLinks":
+      // validation code here
+      return true;
+    case "slugLinks":
       // validation code here
       return true;
     default:
@@ -152,8 +194,11 @@ function validateDel (entryName, hash, pkg, sources) {
       return false;
     case "pageMeta":
       // validation code here
-      return false;
+      return true;
     case "wikiPageLinks":
+      // validation code here
+      return true;
+    case "slugLinks":
       // validation code here
       return true;
     default:
@@ -165,6 +210,9 @@ function validateDel (entryName, hash, pkg, sources) {
 function validateLink (entryName, baseHash, links, pkg, sources) {
   switch (entryName) {
     case "wikiPageLinks":
+      // validation code here
+      return true;
+    case "slugLinks":
       // validation code here
       return true;
     default:

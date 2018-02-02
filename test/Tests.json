@@ -7,7 +7,7 @@
             "Input": {
                 "title": "New wiki page"
             },
-            "Output": "%h3%",
+            "Output": "%h5%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -105,6 +105,52 @@
           "Exposure": "public",
           "Raw": false,
           "Repeat": 0
+        },
+        {
+            "Convey": "Get Page By Slug (also returns FedWikiJSON)",
+            "Zome": "pages",
+            "FnName": "getPageBySlug",
+            "Input": {
+              "slug": "new-wiki-page"
+            },
+            "Output": {
+              "title": "New wiki page",
+              "story": [
+                {
+                  "type": "paragraph",
+                  "id": "fba7f19143e8cdb3",
+                  "text": "Hello!"
+                },
+                {
+                  "type": "paragraph",
+                  "id": "testSortedItem",
+                  "text": "Sup?"
+                }
+              ]
+            },
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
+        },
+        {
+            "Convey": "Get Page By Slug returns null if not found",
+            "Zome": "pages",
+            "FnName": "getPageBySlug",
+            "Input": {
+              "slug": "new-page"
+            },
+            "Output": null,
+            "Err": "",
+            "Regexp": "",
+            "Time": 0,
+            "Wait": 0,
+            "Exposure": "public",
+            "Raw": false,
+            "Repeat": 0
         },
         {
             "Convey": "Get Pages Test",

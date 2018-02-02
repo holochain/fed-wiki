@@ -34,6 +34,10 @@
                 {
                     "Name": "wikiPageLinks",
                     "DataFormat": "links"
+                },
+                {
+                    "Name": "slugLinks",
+                    "DataFormat": "links"
                 }
             ],
             "Functions": [
@@ -53,7 +57,7 @@
                     "Exposure": "public"
                 },
                 {
-                    "Name": "getPageByTitle",
+                    "Name": "getPageBySlug",
                     "CallingType": "json",
                     "Exposure": "public"
                 },
