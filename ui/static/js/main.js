@@ -140,7 +140,7 @@ var wiki = {
 
   quickNewParagraph: function quickNewParagraph(previousId, newText) {
     var newItem = {
-      id: Math.random().toString(),
+      id: Math.random().toString().split('.')[1],
       type: "paragraph",
       text: newText,
     }
@@ -198,7 +198,7 @@ var wiki = {
             // create the item
             var newItem = {
               type: "paragraph",
-              id: Math.random().toString(),
+              id: Math.random().toString().split('.')[1],
               text: event.target.value
             }
             wiki.addItem(wiki.activePageHash, newItem, function(hash) {

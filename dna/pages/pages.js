@@ -130,6 +130,7 @@ function getFedWikiJSON (params) {
 
   // set the story array as a property on the response
   response.story = story;
+  response.journal = []; // TODO: add journal!
   return response;
 }
 
