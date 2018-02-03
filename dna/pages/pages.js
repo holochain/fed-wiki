@@ -88,51 +88,36 @@ function getPageBySlug (slug) {
 
 function getFedWikiJSON (params) {
   var page = getPageBySlug(params.slug);
-
   if (!page) {
     return null;
   }
-
-  var pageLinks = getLinks(page.hash, "page item", { Load: true });
-
-  // define a top level object for our response
-  var response = {
-    title: page.title
-  };
-  // we will populate this story array with items
+  var itemSequence = JSON.parse(call("items", "getItemSequence", {
+    pageHash: page.hash
+  }));
   var story = [];
-
-  for (var i = 0; i < pageLinks.length; i++) {
+  for (var i = 0; i < itemSequence.length; i++) {
     // get the basic entry object
-    var item = pageLinks[i].Entry;
-    // create a new item which will be put into the story
-    var newItem = {
-      type: item.type,
-      id: item.id
-    };
+    // here, we rely on the data forwarding behaviour
+    // to get an item entry by its oldest hash, and receive the latest content
+    var itemHash = itemSequence[i];
+    var itemEntry = get(itemHash);
+    itemEntry = JSON.parse(itemEntry);
+    itemEntry.id = itemHash;
     // pull extra, type-specific fields up
-    for (var field in item.fields) {
-      if (item.fields.hasOwnProperty(field)) {
-        newItem[field] = item.fields[field]
+    for (var field in itemEntry.fields) {
+      if (itemEntry.fields.hasOwnProperty(field)) {
+        itemEntry[field] = itemEntry.fields[field];
       }
     }
+    delete itemEntry.fields;
     // add the properly item structured into the story array
-    story.push(newItem);
+    story.push(itemEntry);
   };
-
-  var itemSequence = call("items", "getItemSequence", {
-    pageHash: page.hash
-  });
-
-  // sort story array by itemSequence
-  story = story.sort(function(a,b){
-    return itemSequence.indexOf(a.id) - itemSequence.indexOf(b.id);
-  });
-
-  // set the story array as a property on the response
-  response.story = story;
-  response.journal = []; // TODO: add journal!
-  return response;
+  return {
+    title: page.title,
+    story: story,
+    journal: [] // TODO: add journal!
+  };
 }
 
 function getSitemapEntry (slug) {

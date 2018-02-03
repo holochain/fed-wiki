@@ -41,13 +41,12 @@
                 "pageHash": {"%result%": 0},
                 "newItem": {
                   "type": "paragraph",
-                  "id": "fba7f19143e8cdb3",
                   "fields": {
                     "text": "Hello!"
                   }
                 }
             },
-            "Output": "%h4%",
+            "Output": "%h2%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -64,13 +63,12 @@
                 "pageHash": {"%result%": 0},
                 "newItem": {
                   "type": "paragraph",
-                  "id": "testSortedItem",
                   "fields": {
                     "text": "Sup?"
                   }
                 }
             },
-            "Output": "%h4%",
+            "Output": "%h2%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -91,12 +89,12 @@
             "story": [
               {
                 "type": "paragraph",
-                "id": "fba7f19143e8cdb3",
+                "id": {"%result%": 2},
                 "text": "Hello!"
               },
               {
                 "type": "paragraph",
-                "id": "testSortedItem",
+                "id": {"%result%": 3},
                 "text": "Sup?"
               }
             ],

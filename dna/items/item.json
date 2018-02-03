@@ -5,15 +5,11 @@
     "type": {
       "type": "string"
     },
-    "id": {
-      "type": "string"
-    },
     "fields": {
       "type": "object"
     }
   },
   "required": [
-    "type",
-    "id"
+    "type"
   ]
 }
