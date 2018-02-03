@@ -79,10 +79,11 @@ var wiki = {
   moveItem: function moveItem (from, to) {
     if (from === to) {return;}
     var movedItem = wiki.storyDisplay[from];
-    var destinationIndex = (from < to) ? to - 1 : to;
+    var destinationIndex = to;
     wiki.storyDisplay.splice(from, 1);
     wiki.storyDisplay.splice(destinationIndex, 0, movedItem);
     wiki.refreshStory();
+    console.log('move', from, to);
   },
 
   drag: function drag (event) {
@@ -177,22 +178,23 @@ var wiki = {
 
   handleDragDrop: function handleDragDrop(event) {
     // reorder story events ui
+    if (event.type === "dragover") {
+      event.preventDefault();
+      // console('dragging');
+    }
+
     if (event.target.classList &&
         event.dataTransfer.getData("text") &&
         event.target.classList.contains("paragraph-item")) {
       switch (event.type) {
         case "dragover":
-          // event.target.classList.add('bg-pink');
-          var movedItemId = event.dataTransfer.getData("text");
-          var destinationId = event.target.id;
-          var indexA = wiki.getStoryItemIndex(movedItemId);
-          var indexB = wiki.getStoryItemIndex(destinationId);
-          wiki.moveItem(indexA, indexB);
           break;
         case "dragleave":
           // event.target.classList.remove('bg-pink');
           break;
         case "drop":
+          event.preventDefault();
+
           // event.target.classList.remove('bg-pink');
           var movedItemId = event.dataTransfer.getData("text");
           var destinationId = event.target.id;
