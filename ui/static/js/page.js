@@ -2,6 +2,7 @@ var wiki = {
   activePageHash: null,
   visiblePages: [],
   storyDisplay: [],
+  savedStoryItems: [],
 
   displayPage: function displayPage (page) {
     wiki.visiblePages = [];
@@ -68,16 +69,17 @@ var wiki = {
 
   addItemEditor: function addItemEditor () {
     wiki.storyDisplay.push({
-      type: "edit-paragraph"
+      type: "edit-paragraph",
+      id: Math.random().toString().split('.')[1],
     });
     wiki.refreshStory();
     document.querySelector('textarea').focus();
   },
 
   moveItem: function moveItem (from, to) {
-    // TODO: fix ordering
+    if (from === to) {return;}
     var movedItem = wiki.storyDisplay[from];
-    var destinationIndex = (from > to) ? to - 1 : to;
+    var destinationIndex = (from < to) ? to - 1 : to;
     wiki.storyDisplay.splice(from, 1);
     wiki.storyDisplay.splice(destinationIndex, 0, movedItem);
     wiki.refreshStory();
@@ -89,16 +91,11 @@ var wiki = {
 
   allowDrop: function allowDrop (event) {
     event.preventDefault();
-  },
-
-  drop: function drop (event) {
-    event.preventDefault();
-    var data = event.dataTransfer.getData("text");
-    console.log(data)
+    // console.log(event);
   },
 
   renderStoryItem: function renderStoryItem (item, index) {
-    var markup = "<div ondrop='wiki.drop(event)' ondragover='wiki.allowDrop(event)'>";
+    var markup = "<div class='story-item'>";
     var text = item.text || "";
 
     switch (item.type) {
@@ -167,9 +164,46 @@ var wiki = {
   finishEditingStoryItem: function finishEditingStoryItem (item) {
     var itemIndex = wiki.getStoryItemIndex(item.id);
     wiki.storyDisplay[itemIndex] = item;
-    // TODO: update on holo.
-    // wiki.updateItem(wiki.activePageHash, OldItemHash, newItem, function(hash) {
-    // });
+
+    if (wiki.savedStoryItems.indexOf(item.id) > -1) {
+      // TODO: update on holo.
+      // wiki.updateItem(wiki.activePageHash, OldItemHash, newItem, function(hash) {
+      // });
+    } else {
+      // add newItem
+      wiki.addItem(wiki.activePageHash, item, function (){});
+    }
+  },
+
+  handleDragDrop: function handleDragDrop(event) {
+    // reorder story events ui
+    if (event.target.classList &&
+        event.dataTransfer.getData("text") &&
+        event.target.classList.contains("paragraph-item")) {
+      switch (event.type) {
+        case "dragover":
+          // event.target.classList.add('bg-pink');
+          var movedItemId = event.dataTransfer.getData("text");
+          var destinationId = event.target.id;
+          var indexA = wiki.getStoryItemIndex(movedItemId);
+          var indexB = wiki.getStoryItemIndex(destinationId);
+          wiki.moveItem(indexA, indexB);
+          break;
+        case "dragleave":
+          // event.target.classList.remove('bg-pink');
+          break;
+        case "drop":
+          // event.target.classList.remove('bg-pink');
+          var movedItemId = event.dataTransfer.getData("text");
+          var destinationId = event.target.id;
+          var indexA = wiki.getStoryItemIndex(movedItemId);
+          var indexB = wiki.getStoryItemIndex(destinationId);
+          wiki.moveItem(indexA, indexB);
+          break;
+        default:
+          break;
+      }
+    }
   },
 
   init: function () {
@@ -177,6 +211,9 @@ var wiki = {
     var pageSlug = window.location.search.split('=')[1]
     wiki.getFedWikiJSON(pageSlug, function (page) {
       wiki.displayPage(page);
+      page.story.forEach(x => {
+        wiki.savedStoryItems.push(x.id);
+      })
     });
     wiki.getPageBySlug(pageSlug, function (page) {
       wiki.activePageHash = page.hash;
@@ -202,6 +239,7 @@ var wiki = {
               text: newText,
               id: textField.parentNode.id
             });
+            console.log('fin')
           } else {
             // create the item
             var newItem = {
@@ -246,7 +284,19 @@ var wiki = {
           if (event.target.className === "paragraph-item") {
             wiki.editStoryItem(event.target.getAttribute("id"));
           }
-        })
+        });
+
+      document.getElementById("wiki-page-story").
+        addEventListener("dragover",
+          function (event) { wiki.handleDragDrop(event); });
+
+      document.getElementById("wiki-page-story").
+        addEventListener("dragleave",
+          function (event) { wiki.handleDragDrop(event); });
+
+      document.getElementById("wiki-page-story").
+        addEventListener("drop",
+          function (event) { wiki.handleDragDrop(event); });
   }
 
 };
