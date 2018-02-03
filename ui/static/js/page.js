@@ -1,25 +1,3 @@
-var holo = {
-  send: function read(zome, fn, data, callback) {
-    var xhr = new XMLHttpRequest()
-    var url = '/fn/' + zome + '/' + fn
-    xhr.open('POST', url, true)
-    xhr.setRequestHeader('Content-type', 'application/json')
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        callback(JSON.parse(xhr.responseText))
-      } else if (xhr.status >= 400) {
-        console.log('nope')
-        console.log(xhr)
-      }
-    }
-    var stringified = JSON.stringify(data)
-    xhr.send(stringified)
-  }
-};
-
-var testPageName = "Welcome Developers";
-var testPageSlug = "welcome-developers";
-
 var wiki = {
   activePageHash: null,
   visiblePages: [],
@@ -34,13 +12,14 @@ var wiki = {
     wiki.refreshStory();
   },
 
-  getPage: function getPage (slug, callback) {
-    // IF (page not in client cache)
+  getFedWikiJSON: function getPage (slug, callback) {
     holo.send('pages', 'getFedWikiJSON', {
       slug: slug
     }, callback);
-    // OR
-    // retrieve from client cache.
+  },
+
+  getPageBySlug: function getPage (slug, callback) {
+    holo.send('pages', 'getPageBySlug', slug, callback);
   },
 
   createPage: function createPage (page, callback) {
@@ -174,13 +153,13 @@ var wiki = {
   },
 
   init: function () {
-    wiki.createPage({
-        "title": testPageName
-    }, function (hash) {
-      wiki.getPage(testPageSlug, function (page) {
-        wiki.activePageHash = hash;
-        wiki.displayPage(page);
-      })
+    // HACK!
+    var pageSlug = window.location.search.split('=')[1]
+    wiki.getFedWikiJSON(pageSlug, function (page) {
+      wiki.displayPage(page);
+    });
+    wiki.getPageBySlug(pageSlug, function (page) {
+      wiki.activePageHash = page.hash;
     });
 
     document.getElementById("add-story-item").

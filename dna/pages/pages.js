@@ -61,8 +61,9 @@ function getPages () {
 }
 
 function getPage (hash) {
-  var page = get(hash);
-  return JSON.parse(page);
+  var page = JSON.parse(get(hash));
+  page.slug = slugForTitle(page.title);
+  return page;
 }
 
 // Util function isErr

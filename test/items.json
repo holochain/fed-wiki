@@ -239,7 +239,9 @@
           "Convey": "When getting page, item should be updated",
           "Zome": "pages",
           "FnName": "getFedWikiJSON",
-          "Input": {"%result%": 0},
+          "Input": {
+              "slug": "new-wiki-page"
+          },
           "Output": {
             "title": "New wiki page",
             "story": [
@@ -248,7 +250,8 @@
                 "id": "fba7f19143e8cdb3",
                 "text": "Updated Hello is now HI!"
               }
-            ]
+            ],
+            "journal": []
           },
           "Err": "",
           "Regexp": "",

@@ -22,7 +22,8 @@
             "FnName": "getPage",
             "Input": {"%result%": 0},
             "Output": {
-                "title": "New wiki page"
+                "title": "New wiki page",
+                "slug": "new-wiki-page"
             },
             "Err": "",
             "Regexp": "",
@@ -98,7 +99,8 @@
                 "id": "testSortedItem",
                 "text": "Sup?"
               }
-            ]
+            ],
+            "journal": []
           },
           "Err": "",
           "Regexp": "",

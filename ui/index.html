@@ -5,28 +5,22 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/static/css/tachyons.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
+    <script type="text/javascript" src="/static/js/hc.js"></script>
   </head>
-  <body>
-    <div class="bg-moon-gray vh-100">
-      <div class="pa2 h-100">
-        <div class="page br3 overflow-hidden h-100">
+  <body class="sans-serif">
+    <div class="fl w-100 pa2">
+      <div class="pa4 pb2 f3">Liquid Wiki Pages</div>
+      <ul class="pages list pa4 pt0 pb0" id="pages">
 
-          <div class=" bg-white mw6 pa2 h-100 overflow-y-scroll" id="wiki-page">
-            <h1 id="wiki-page-title" class="pb2 bb"></h1>
-
-            <div class="story" id="wiki-page-story">
-            </div>
-
-            <footer class="bg-moon-gray pa2">
-              <div class="tr">
-                <button id="add-story-item" type="button">+</button>
-              </div>
-            </footer>
-
-          </div>
+      </ul>
+      <form id="create-page" class="pt2 pl4 pr4 black-80">
+        <div class="measure">
+          <label for="name" class="f6 b db mb2">Create a page</label>
+          <input id="name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
+          <small id="name-desc" class="f6 black-60 db mb2">Hit enter to create</small>
         </div>
-      </div>
+      </form>
     </div>
-    <script type="text/javascript" src="/static/js/main.js"></script>
+    <script type="text/javascript" src="/static/js/index.js"></script>
   </body>
 </html>
