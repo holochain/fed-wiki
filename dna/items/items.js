@@ -116,9 +116,9 @@ function removeItemFromSequence (arg) {
 
 // PRIVATE
 function privateGetItemSequence (pageHash) {
-  var sequenceLinks = getLinks(pageHash, "page sequence")
+  var sequenceLinks = getLinks(pageHash, "page sequence", { Load: true });
   var sequenceHash = sequenceLinks[0].Hash;
-  var sequenceEntry = JSON.parse(get(sequenceHash));
+  var sequenceEntry = sequenceLinks[0].Entry;
   sequenceEntry.originalHash = sequenceHash;
   // we do this because the content may differ from the hash we
   // retrieved, because of the follow updated content
