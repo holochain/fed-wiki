@@ -100,10 +100,20 @@ var wiki = {
   renderStoryItem: function renderStoryItem (item, index) {
     var markup = "<div ondrop='wiki.drop(event)' ondragover='wiki.allowDrop(event)'>";
     var text = item.text || "";
-    if (item.type === "edit-paragraph") {
-      markup += "<div class='edit-paragraph'><textarea class='w-100' data-nif-id='" + index + "'>" + text + "</textarea></div>";
-    } else if (item.type === "paragraph") {
-      markup += "<p draggable='true' ondragstart='wiki.drag(event)' id='" + item.id +"' class='paragraph-item'>" + text + "</p>";
+
+    switch (item.type) {
+      case "edit-paragraph":
+      case "new-paragraph":
+        markup += "<div class='edit-paragraph' id='" + item.id +
+          "' data-type='" + item.type +
+          "'><textarea class='w-100' data-nif-id='" + index +
+          "'>" + text + "</textarea></div>";
+        break;
+      default:
+        markup += "<p draggable='true' ondragstart='wiki.drag(event)' " +
+          " id='" + item.id +
+          "' class='paragraph-item'>" + text + "</p>";
+        break;
     }
 
     markup += "</div>";
@@ -117,18 +127,13 @@ var wiki = {
     document.getElementById("wiki-page-story").innerHTML = storyMarkup;
   },
 
-  quickNewParagraph: function quickNewParagraph(previousId, newText) {
-    var newItem = {
+  quickNewParagraph: function quickNewParagraph(at) {
+    // wiki.finishEditingStoryItem()
+    var OldItemHash;
+    wiki.storyDisplay.splice(at, 0, {
+      type: "new-paragraph",
+      text: "",
       id: Math.random().toString().split('.')[1],
-      type: "paragraph",
-      text: newText,
-    }
-    wiki.storyDisplay[previousId] = newItem;
-    wiki.storyDisplay.splice(previousId + 1, 0, {
-      type: "edit-paragraph"
-    });
-    wiki.addItem(wiki.activePageHash, newItem, function(hash) {
-      newItem.hash = hash;
     });
     wiki.refreshStory();
     // Focus in new paragraph textarea
@@ -136,20 +141,35 @@ var wiki = {
     fields[0].focus();
   },
 
-  editStoryItem: function editStoryItem (id) {
-    var itemIndex, item;
+  getStoryItemIndex: function getStoryItemIndex (id) {
+    var index;
     for (var i = 0; i < wiki.storyDisplay.length; i++) {
       if (wiki.storyDisplay[i].id === id) {
-        itemIndex = i;
-        item = wiki.storyDisplay[i];
+        index = i;
         continue;
       }
     }
+    return index;
+  },
+
+  editStoryItem: function editStoryItem (id) {
+    var itemIndex = wiki.getStoryItemIndex(id)
+    var item = wiki.storyDisplay[itemIndex];
     wiki.storyDisplay[itemIndex] = {
       type: "edit-paragraph",
-      text: item.text
+      text: item.text,
+      id: id
     };
     wiki.refreshStory();
+    document.querySelectorAll("[data-nif-id='" + itemIndex + "']")[0].focus();
+  },
+
+  finishEditingStoryItem: function finishEditingStoryItem (item) {
+    var itemIndex = wiki.getStoryItemIndex(item.id);
+    wiki.storyDisplay[itemIndex] = item;
+    // TODO: update on holo.
+    // wiki.updateItem(wiki.activePageHash, OldItemHash, newItem, function(hash) {
+    // });
   },
 
   init: function () {
@@ -170,21 +190,30 @@ var wiki = {
     document.getElementById("wiki-page").
       addEventListener("focusout", function (event) {
         if (event.target.tagName === "TEXTAREA") {
-          if (event.target.value === "") {
-            var nifIndex = event.target.getAttribute('data-nif-id')
+          var textField = event.target;
+          var nifIndex = textField.getAttribute('data-nif-id');
+          var isEdit = (textField.parentNode.dataset['type'] === "edit-paragraph");
+          if (textField.value === "") {
             wiki.storyDisplay.splice(nifIndex, 1)
+          } else if (isEdit) {
+            var newText = textField.value;
+            wiki.finishEditingStoryItem({
+              type: "paragraph",
+              text: newText,
+              id: textField.parentNode.id
+            });
           } else {
             // create the item
             var newItem = {
               type: "paragraph",
               id: Math.random().toString().split('.')[1],
-              text: event.target.value
+              text: textField.value
             }
             wiki.addItem(wiki.activePageHash, newItem, function(hash) {
               newItem.hash = hash;
             })
             // replace the textarea with the created item
-            var nifIndex = event.target.getAttribute('data-nif-id')
+            var nifIndex = textField.getAttribute('data-nif-id')
             wiki.storyDisplay[nifIndex] = newItem;
           }
           wiki.refreshStory();
@@ -197,8 +226,13 @@ var wiki = {
             if (event.key === "Enter") {
               event.preventDefault();
               if (event.target.value !== "") {
-                var id = event.target.getAttribute('data-nif-id');
-                wiki.quickNewParagraph(id, event.target.value);
+                wiki.finishEditingStoryItem({
+                  type: "paragraph",
+                  text: event.target.value,
+                  id: event.target.parentNode.id
+                });
+                var location = 1 + wiki.getStoryItemIndex(event.target.parentNode.id);
+                wiki.quickNewParagraph(location);
               } else {
                 event.target.blur();
                 // TODO: if this was a paragraph, delete it.
