@@ -126,14 +126,27 @@ function getSitemapEntry (slug) {
   if (!page) {
     return null;
   }
-
+  var itemSequence = JSON.parse(call("items", "getItemSequence", {
+    pageHash: page.hash
+  }));
+  var synopsis = "";
+  if (itemSequence.length != 0) {
+    var firstItem = JSON.parse(get(itemSequence[0]));
+    if (firstItem.type = "paragraph") {
+      synopsis = firstItem.fields.text;
+    } else {
+      synopsis = "Non-text media";
+    }
+  } else {
+    synopsis = "Empty page";
+  }
   // get items, get sequence, retrieve first item, and use text as synopsis
   // TODO: how to do date?
   return {
     slug: slug,
     title: page.title,
     date: 1512129313492, // TODO: unhardcode!
-    synopsis: "Hello!" // TODO: unhardcode!
+    synopsis: synopsis
   };
 }
 
