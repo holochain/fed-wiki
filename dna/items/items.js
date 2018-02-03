@@ -51,13 +51,14 @@ function removeItem (arg) {
 function createItemSequence (arg) {
   var pageHash = arg.pageHash;
   var itemSequence = arg.itemSequence;
+  itemSequence.pageHash = pageHash;
   var itemSequenceHash =  commit("itemSequence", itemSequence);
   var pageLinkHash = commit("pageLinks", {
     Links: [
       {Base:pageHash, Link:itemSequenceHash, Tag:"page sequence"}
     ]
   });
-  return pageLinkHash;
+  return itemSequenceHash;
 }
 
 function getItemSequence (arg) {
@@ -76,7 +77,8 @@ function insertItemToSequence (arg) {
   itemSequence.push(itemHash);
   // update
   var newSequenceHash = update('itemSequence', {
-    sequence: itemSequence
+    sequence: itemSequence,
+    pageHash: pageHash
   }, sequenceEntry.latestHash);
   return newSequenceHash;
 }
@@ -89,7 +91,8 @@ function changeItemSequence (arg) {
   var sequence = arg.sequence;
   var sequenceEntry = privateGetItemSequence(pageHash);
   var newSequenceHash = update("itemSequence", {
-    sequence: sequence
+    sequence: sequence,
+    pageHash: pageHash
   }, sequenceEntry.latestHash);
   return newSequenceHash;
 }
@@ -105,7 +108,8 @@ function removeItemFromSequence (arg) {
   // remove the itemHash from itemSequence
   itemSequence.splice(itemHashIndex, 1);
   var newSequenceHash = update("itemSequence", {
-    sequence: itemSequence
+    sequence: itemSequence,
+    pageHash: pageHash
   }, sequenceEntry.latestHash);
   return newSequenceHash;
 }
@@ -120,7 +124,8 @@ function privateGetItemSequence (pageHash) {
   // retrieved, because of the follow updated content
   // behaviour of holochain
   sequenceEntry.latestHash = makeHash("itemSequence", {
-    sequence: sequenceEntry.sequence
+    sequence: sequenceEntry.sequence,
+    pageHash: pageHash
   });
   return sequenceEntry;
 }

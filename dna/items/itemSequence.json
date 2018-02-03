@@ -4,9 +4,13 @@
   "properties": {
     "sequence": {
       "type": "array"
+    },
+    "pageHash": {
+      "type": "string"
     }
   },
   "required": [
-    "sequence"
+    "sequence",
+    "pageHash"
   ]
 }
