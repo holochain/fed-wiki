@@ -1,8 +1,5 @@
 'use strict';
 
-var wikiName = "TheFederation"
-// how should this get set
-
 // https://developer.holochain.org/API_reference
 // https://developer.holochain.org/Test_driven_development_features
 
@@ -16,23 +13,15 @@ function addItem (arg) {
       {Base:pageHash, Link:itemHash, Tag:"page item"}
     ]
   });
-  // add the itemId into the itemSequence for the page
   insertItemToSequence({
     pageHash: pageHash,
-    itemId: newItem.id
+    itemHash: itemHash
   });
   return itemHash;
 }
 
 function updateItem (arg) {
-  var hash = updateLinkedThing({
-    thingType: "item",
-    linkTag: "page item",
-    pageHash: arg.pageHash,
-    thingHash: arg.itemHash,
-    newThing: arg.newItem
-  });
-  return hash;
+  return update('item', arg.newItem, arg.itemHash);
 }
 
 // TODO: handle errors
@@ -50,11 +39,9 @@ function removeItem (arg) {
       }
     ]
   });
-  var itemId = JSON.parse(get(itemHash)).id;
-  // remove the itemId from the itemSequence
   removeItemFromSequence({
     pageHash: pageHash,
-    itemId: itemId
+    itemHash: itemHash
   });
   // remove the entry
   var deletedHash = remove(itemHash, arg.message);
@@ -75,76 +62,67 @@ function createItemSequence (arg) {
 
 function getItemSequence (arg) {
   var pageHash = arg.pageHash;
-  var pageLinks = getLinks(pageHash, "page sequence", { Load: true });
-  if (pageLinks.length > 0) {
-    return pageLinks[0].Entry.sequence;
-  } else {
-    return "Error there should be a sequence for a page!";
-  }
+  var sequenceEntry = privateGetItemSequence(pageHash);
+  return sequenceEntry.sequence;
 }
 
 // new itemId will be added to sequence
 function insertItemToSequence (arg) {
-  var itemId = arg.itemId;
+  var itemHash = arg.itemHash;
   var pageHash = arg.pageHash;
-
-  // get the link to the current sequence
-  var sequenceLinks = getLinks(pageHash, "page sequence", { Load: true });
-  var itemSequence, itemSequenceHash;
-  // only proceed if a links entry exists
-  // THIS COULD HAPPEN IN VALIDATE
-  if (sequenceLinks.length > 0) {
-    // get the hash for the existing sequence
-    itemSequenceHash = sequenceLinks[0].Hash
-    // get the existing sequence
-    itemSequence = sequenceLinks[0].Entry.sequence
-    // add new item
-    itemSequence.push(itemId)
-    var newSequenceHash = updateSequence({
-      pageHash: pageHash,
-      sequenceHash: itemSequenceHash,
-      newSequence: itemSequence
-    });
-    return newSequenceHash;
-  } else {
-    debug('Error');
-    return "Error there should be a sequence for a page!";
-  }
+  var sequenceEntry = privateGetItemSequence(pageHash);
+  var itemSequence = sequenceEntry.sequence;
+  // add new item
+  itemSequence.push(itemHash);
+  // update
+  var newSequenceHash = update('itemSequence', {
+    sequence: itemSequence
+  }, sequenceEntry.latestHash);
+  return newSequenceHash;
 }
 
-// sequence length should remain the same
+// validate sequence length should remain the same
 // should throw error if length is different
 // or if all the IDs don't match
-// DO IN VALIDATE var sequenceLink = getLinks(pageHash, "page sequence", { Load: true });
 function changeItemSequence (arg) {
   var pageHash = arg.pageHash;
   var sequence = arg.sequence;
-  var sequenceLinks = getLinks(pageHash, "page sequence");
-  var itemSequenceHash = sequenceLinks[0].Hash;
-  var newSequenceHash = updateSequence({
-    pageHash: pageHash,
-    sequenceHash: itemSequenceHash,
-    newSequence: sequence
-  });
+  var sequenceEntry = privateGetItemSequence(pageHash);
+  var newSequenceHash = update("itemSequence", {
+    sequence: sequence
+  }, sequenceEntry.latestHash);
   return newSequenceHash;
 }
 
-// TODO: validate that itemId exists in the sequence
+// TODO: validate that itemHash exists in the sequence
 function removeItemFromSequence (arg) {
   var pageHash = arg.pageHash;
-  var itemId = arg.itemId;
-  var sequenceLinks = getLinks(pageHash, "page sequence", { Load: true });
-  var itemSequenceHash = sequenceLinks[0].Hash;
-  var itemSequence = sequenceLinks[0].Entry.sequence;
-  var itemIdIndex = itemSequence.indexOf(itemId);
-  // remove the itemId from itemSequence
-  itemSequence.splice(itemIdIndex, 1);
-  var newSequenceHash = updateSequence({
-    pageHash: pageHash,
-    sequenceHash: itemSequenceHash, // existing (for removal)
-    newSequence: itemSequence
-  });
+  var itemHash = arg.itemHash;
+  var sequenceEntry = privateGetItemSequence(pageHash);
+  // get the current position of the item
+  var itemSequence = sequenceEntry.sequence;
+  var itemHashIndex = itemSequence.indexOf(itemHash);
+  // remove the itemHash from itemSequence
+  itemSequence.splice(itemHashIndex, 1);
+  var newSequenceHash = update("itemSequence", {
+    sequence: itemSequence
+  }, sequenceEntry.latestHash);
   return newSequenceHash;
+}
+
+// PRIVATE
+function privateGetItemSequence (pageHash) {
+  var sequenceLinks = getLinks(pageHash, "page sequence")
+  var sequenceHash = sequenceLinks[0].Hash;
+  var sequenceEntry = JSON.parse(get(sequenceHash));
+  sequenceEntry.originalHash = sequenceHash;
+  // we do this because the content may differ from the hash we
+  // retrieved, because of the follow updated content
+  // behaviour of holochain
+  sequenceEntry.latestHash = makeHash("itemSequence", {
+    sequence: sequenceEntry.sequence
+  });
+  return sequenceEntry;
 }
 
 // VALIDATION FUNCTIONS
@@ -247,47 +225,3 @@ function genesis () {
   // any genesis code here
   return true;
 }
-
-/*
- * PRIVATE
- */
-
- function updateLinkedThing (arg) {
-   // TODO: handle errors
-   // if exists, orphan existing hash by deleting link to it
-   commit("pageLinks", {
-     Links: [
-       {
-         Base: arg.pageHash,
-         Link: arg.thingHash,
-         Tag: arg.linkTag,
-         LinkAction: HC.LinkAction.Del
-       }
-     ]
-   });
-   // create the new sequence
-   var newThingHash =  commit(arg.thingType, arg.newThing);
-   // link from the page to the new sequence
-   commit("pageLinks", {
-     Links: [
-       {
-         Base: arg.pageHash,
-         Link: newThingHash,
-         Tag: arg.linkTag
-       }
-     ]
-   });
-   return newThingHash;
- }
-
- function updateSequence (arg) {
-   return updateLinkedThing({
-     thingType: "itemSequence",
-     linkTag: "page sequence",
-     pageHash: arg.pageHash,
-     thingHash: arg.sequenceHash,
-     newThing: {
-       sequence: arg.newSequence
-     }
-   });
- }

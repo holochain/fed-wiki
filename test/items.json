@@ -24,13 +24,12 @@
                 "pageHash": {"%result%": 0},
                 "newItem": {
                   "type": "paragraph",
-                  "id": "fba7f19143e8cdb3",
                   "fields": {
                     "text": "Hello!"
                   }
                 }
             },
-            "Output": "%h4%",
+            "Output": "%h2%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -47,13 +46,12 @@
                 "pageHash": {"%result%": 0},
                 "newItem": {
                   "type": "paragraph",
-                  "id": "gha7f19143e8cdb4",
                   "fields": {
                     "text": "Hello again!"
                   }
                 }
             },
-            "Output": "%h4%",
+            "Output": "%h2%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -69,7 +67,7 @@
             "Input": {
               "pageHash": {"%result%": 0}
             },
-            "Output": ["fba7f19143e8cdb3", "gha7f19143e8cdb4"],
+            "Output": [{"%result%": 1}, {"%result%": 2}],
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -79,14 +77,14 @@
             "Repeat": 0
         },
         {
-            "Convey": "Insert itemId to itemSequence at end",
+            "Convey": "Insert itemHash to itemSequence at end",
             "Zome": "items",
             "FnName": "insertItemToSequence",
             "Input": {
               "pageHash": {"%result%": 0},
-              "itemId": "123"
+              "itemHash": "123"
             },
-            "Output": "%h1%",
+            "Output": "%h%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -102,7 +100,7 @@
             "Input": {
               "pageHash": {"%result%": 0}
             },
-            "Output": ["fba7f19143e8cdb3", "gha7f19143e8cdb4", "123"],
+            "Output": [{"%result%": 1}, {"%result%": 2}, "123"],
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -117,9 +115,9 @@
             "FnName": "changeItemSequence",
             "Input": {
               "pageHash": {"%result%": 0},
-              "sequence": ["123", "gha7f19143e8cdb4", "fba7f19143e8cdb3"]
+              "sequence": ["123", {"%result%": 2}, {"%result%": 1}]
             },
-            "Output": "%h1%",
+            "Output": "%h%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -135,7 +133,7 @@
             "Input": {
               "pageHash": {"%result%": 0}
             },
-            "Output": ["123", "gha7f19143e8cdb4", "fba7f19143e8cdb3"],
+            "Output": ["123", {"%result%": 2}, {"%result%": 1}],
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -150,9 +148,9 @@
             "FnName": "removeItemFromSequence",
             "Input": {
               "pageHash": {"%result%": 0},
-              "itemId": "123"
+              "itemHash": "123"
             },
-            "Output": "%h1%",
+            "Output": "%h%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -168,7 +166,7 @@
             "Input": {
               "pageHash": {"%result%": 0}
             },
-            "Output": ["gha7f19143e8cdb4", "fba7f19143e8cdb3"],
+            "Output": [{"%result%": 2}, {"%result%": 1}],
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -202,7 +200,7 @@
             "Input": {
               "pageHash": {"%result%": 0}
             },
-            "Output": ["fba7f19143e8cdb3"],
+            "Output": [{"%result%": 1}],
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -220,13 +218,12 @@
               "itemHash": {"%result%": 1},
               "newItem": {
                 "type":"paragraph",
-                "id": "fba7f19143e8cdb3",
                 "fields": {
                   "text": "Updated Hello is now HI!"
                 }
               }
             },
-            "Output": "%h1%",
+            "Output": "%h%",
             "Err": "",
             "Regexp": "",
             "Time": 0,
@@ -247,7 +244,7 @@
             "story": [
               {
                 "type": "paragraph",
-                "id": "fba7f19143e8cdb3",
+                "id": {"%result%": 1},
                 "text": "Updated Hello is now HI!"
               }
             ],
