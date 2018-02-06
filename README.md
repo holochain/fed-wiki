@@ -2,6 +2,10 @@
 
 Federated Wiki on Holochain
 
+## To link in this instance with fed-wiki
+
+You will have to also run the fed-wiki proxy... https://github.com/Connoropolous/holochain-fed-wiki-proxy
+
 ## Development
 
 Issue: Holochain caches the ui, so it needs to be restarted to get ui updates. For more rapid development, we have some solutions.
