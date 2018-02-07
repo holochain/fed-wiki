@@ -32,7 +32,6 @@ var wiki = {
       pageHash: pageHash,
       newItem: {
         type: item.type,
-        id: item.id,
         fields: {
           text: item.text // TODO: generalize this code so other types would work
         }
@@ -45,7 +44,12 @@ var wiki = {
     var data = {
       pageHash: pageHash,
       itemHash: itemHash,
-      newItem: item
+      newItem: {
+        type: item.type,
+        fields: {
+          text: item.text // TODO: generalize this code so other types would work
+        }
+      }
     };
     holo.send('items', 'updateItem', data, callback);
   },
@@ -77,13 +81,17 @@ var wiki = {
   },
 
   moveItem: function moveItem (from, to) {
-    if (from === to) {return;}
-    var movedItem = wiki.storyDisplay[from];
-    var destinationIndex = to;
-    wiki.storyDisplay.splice(from, 1);
-    wiki.storyDisplay.splice(destinationIndex, 0, movedItem);
-    wiki.refreshStory();
-    console.log('move', from, to);
+    if (from !== to) {
+      var movedItem = wiki.storyDisplay[from];
+      wiki.storyDisplay.splice(from, 1);
+      wiki.storyDisplay.splice(to, 0, movedItem);
+      wiki.refreshStory();
+      // TODO: change sequence in holo
+      var newSequence = wiki.storyDisplay.map(x => x.id);
+      wiki.changeItemSequence(newSequence,
+        wiki.activePageHash,
+        function () {});
+    }
   },
 
   drag: function drag (event) {
@@ -156,7 +164,8 @@ var wiki = {
     wiki.storyDisplay[itemIndex] = {
       type: "edit-paragraph",
       text: item.text,
-      id: id
+      id: id,
+      latestHash: item.latestHash
     };
     wiki.refreshStory();
     document.querySelectorAll("[data-nif-id='" + itemIndex + "']")[0].focus();
@@ -167,12 +176,17 @@ var wiki = {
     wiki.storyDisplay[itemIndex] = item;
 
     if (wiki.savedStoryItems.indexOf(item.id) > -1) {
-      // TODO: update on holo.
-      // wiki.updateItem(wiki.activePageHash, OldItemHash, newItem, function(hash) {
-      // });
+      wiki.updateItem(wiki.activePageHash, item.latestHash, item,
+        function(newHash) {
+          item.latestHash = newHash;
+      });
     } else {
       // add newItem
-      wiki.addItem(wiki.activePageHash, item, function (){});
+      wiki.addItem(wiki.activePageHash, item, function (hash){
+        item.id = hash;
+        item.latestHash = hash;
+      });
+      wiki.savedStoryItems.push(item.id);
     }
   },
 
@@ -188,19 +202,24 @@ var wiki = {
         event.target.classList.contains("paragraph-item")) {
       switch (event.type) {
         case "dragover":
+          // Visual effect
+          var destinationId = event.target.id;
+          var newItemPosition = wiki.getStoryItemIndex(destinationId);
+          document.querySelectorAll('.paragraph-item')[newItemPosition].
+            classList.add('bg-pink')
           break;
         case "dragleave":
-          // event.target.classList.remove('bg-pink');
+          event.target.classList.remove('bg-pink');
           break;
         case "drop":
           event.preventDefault();
-
+          event.target.classList.remove('bg-pink');
           // event.target.classList.remove('bg-pink');
           var movedItemId = event.dataTransfer.getData("text");
           var destinationId = event.target.id;
-          var indexA = wiki.getStoryItemIndex(movedItemId);
-          var indexB = wiki.getStoryItemIndex(destinationId);
-          wiki.moveItem(indexA, indexB);
+          var draggedItemPosition = wiki.getStoryItemIndex(movedItemId);
+          var newItemPosition = wiki.getStoryItemIndex(destinationId);
+          wiki.moveItem(draggedItemPosition, newItemPosition);
           break;
         default:
           break;
