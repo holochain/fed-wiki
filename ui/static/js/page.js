@@ -88,8 +88,8 @@ var wiki = {
       wiki.refreshStory();
       // TODO: change sequence in holo
       var newSequence = wiki.storyDisplay.map(x => x.id);
-      wiki.changeItemSequence(newSequence,
-        wiki.activePageHash,
+      wiki.changeItemSequence(wiki.activePageHash,
+        newSequence,
         function () {});
     }
   },
