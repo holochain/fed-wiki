@@ -7,7 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "webpack --watch & node scripts/start.js",
+    "build-client": "webpack",
+    "build-client-watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,7 +26,13 @@
   },
   "homepage": "https://github.com/Holochain/fed-wiki#readme",
   "devDependencies": {
-    "browser-sync": "^2.23.6"
+    "browser-sync": "^2.23.6",
+    "coffee-loader": "^0.9.0",
+    "coffeescript": "^2.2.1",
+    "webpack": "^3.11.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "jquery": "^2.2.4",
+    "wiki-client": "^0.13.0"
+  }
 }

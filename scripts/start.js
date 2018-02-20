@@ -1,8 +1,7 @@
 var bs = require('browser-sync').create();
-var util = require('util')
+var util = require('util');
 var exec = require('child_process').exec;
 var port = "4141";
-var holo;
 
 function consoleOut (error, stdout, stderr) {
   util.print('stdout: ' + stdout);
@@ -12,32 +11,35 @@ function consoleOut (error, stdout, stderr) {
   }
 }
 
-exec("hcdev --no-nat-upnp web " + port, consoleOut);
+exec("./restart.sh", consoleOut);
 
-setTimeout(function () {
-  bs.init({
-    proxy: "localhost:" + port,
-    cors: true,
-    serveStatic: [
-      {
-        route: '/static',
-        dir: 'ui/static'
-      }
-    ]
-  });
-}, 1000);
+console.log('what')
+bs.init({
+  proxy: "localhost:" + port,
+  cors: true,
+  serveStatic: [
+    {
+      route: '/static',
+      dir: 'ui/static'
+    }
+  ]
+});
 
 bs.watch([
-  "./**/*.css",
-  "./**/*.js"
+  "./ui/**/*.css",
+  "./ui/**/*.js"
 ]).on("change", bs.reload);
 
 bs.watch([
-  "./**/*.html"
+  "./ui/**/*.html",
+  "./dna/**/*.*"
 ]).on("change", function () {
-  util.print('HTML changed: restarting holo app.\n');
+  util.print('HTML/DNA changed: restarting holo app.\n');
   exec('./restart.sh', consoleOut);
+
   setTimeout(function () {
     bs.reload("index.html");
   }, 1000);
 });
+
+console.log('end');

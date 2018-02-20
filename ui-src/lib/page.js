@@ -1,3 +1,5 @@
+var wcResolve = require('wiki-client/lib/resolve');
+
 var wiki = {
   activePageHash: null,
   visiblePages: [],
@@ -94,13 +96,10 @@ var wiki = {
     }
   },
 
-  drag: function drag (event) {
-    event.dataTransfer.setData("text", event.target.id);
-  },
-
-  allowDrop: function allowDrop (event) {
-    event.preventDefault();
-    // console.log(event);
+  parseWikiMarkup: function parseWikiMarkup(text) {
+    var t;
+    t = wcResolve.resolveLinks(text)
+    return t;
   },
 
   renderStoryItem: function renderStoryItem (item, index) {
@@ -116,9 +115,9 @@ var wiki = {
           "'>" + text + "</textarea></div>";
         break;
       default:
-        markup += "<p draggable='true' ondragstart='wiki.drag(event)' " +
+        markup += "<p draggable='true'" +
           " id='" + item.id +
-          "' class='paragraph-item'>" + text + "</p>";
+          "' class='paragraph-item'>" + wiki.parseWikiMarkup(text) + "</p>";
         break;
     }
 
@@ -192,9 +191,17 @@ var wiki = {
 
   handleDragDrop: function handleDragDrop(event) {
     // reorder story events ui
-    if (event.type === "dragover") {
-      event.preventDefault();
+    // note: broken
+    if (event.type === "dragstart") {
+      if (event.target.classList.contains("paragraph-item")) {
+        event.dataTransfer.setData("text", event.target.id);
+      } else {
+        //event.preventDefault();
+      }
+    }
+    if (event.type === "drop") {
       // console('dragging');
+      console.log(event.dataTransfer.getData("text"));
     }
 
     if (event.target.classList &&
@@ -202,14 +209,12 @@ var wiki = {
         event.target.classList.contains("paragraph-item")) {
       switch (event.type) {
         case "dragover":
+          event.preventDefault();
           // Visual effect
           var destinationId = event.target.id;
           var newItemPosition = wiki.getStoryItemIndex(destinationId);
           document.querySelectorAll('.paragraph-item')[newItemPosition].
             classList.add('bg-pink')
-          break;
-        case "dragleave":
-          event.target.classList.remove('bg-pink');
           break;
         case "drop":
           event.preventDefault();
@@ -221,6 +226,9 @@ var wiki = {
           var newItemPosition = wiki.getStoryItemIndex(destinationId);
           wiki.moveItem(draggedItemPosition, newItemPosition);
           break;
+        case "dragleave":
+          event.target.classList.remove('bg-pink');
+          break;
         default:
           break;
       }
@@ -229,7 +237,10 @@ var wiki = {
 
   init: function () {
     // HACK!
-    var pageSlug = window.location.search.split('=')[1]
+    var pageSlug = window.location.search.split('=')[1];
+    if (!pageSlug) {
+      return;
+    }
     wiki.getFedWikiJSON(pageSlug, function (page) {
       wiki.displayPage(page);
       page.story.forEach(x => {
@@ -308,6 +319,10 @@ var wiki = {
         });
 
       document.getElementById("wiki-page-story").
+        addEventListener("dragstart",
+          function (event) { wiki.handleDragDrop(event); });
+
+      document.getElementById("wiki-page-story").
         addEventListener("dragover",
           function (event) { wiki.handleDragDrop(event); });
 
@@ -319,7 +334,6 @@ var wiki = {
         addEventListener("drop",
           function (event) { wiki.handleDragDrop(event); });
   }
-
 };
 
-wiki.init();
+module.exports = wiki;
